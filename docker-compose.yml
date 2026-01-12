@@ -1,0 +1,38 @@
+services:
+  
+  app:
+    build: .                 
+    container_name: igloo_app
+    restart: unless-stopped
+    ports:
+      - "${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}"
+    environment:
+      - POSTGRESDB_HOST=db 
+      - POSTGRESDB_USER=${POSTGRESDB_USER}
+      - POSTGRESDB_ROOT_PASSWORD=${POSTGRESDB_ROOT_PASSWORD}
+      - POSTGRESDB_DATABASE=${POSTGRESDB_DATABASE}
+      - POSTGRESDB_DIALECT=postgres
+      - NODE_LOCAL_PORT=${NODE_LOCAL_PORT}
+    depends_on:
+      - db
+    volumes:
+      - ./:/usr/src/app           
+      - /usr/src/app/node_modules 
+
+  
+  db:
+    image: postgres:15-alpine
+    container_name: igloo_db
+    restart: unless-stopped
+    ports:
+      - "${POSTGRESDB_LOCAL_PORT}:${POSTGRESDB_DOCKER_PORT}"
+    environment:
+      
+      POSTGRES_USER: ${POSTGRESDB_USER}
+      POSTGRES_PASSWORD: ${POSTGRESDB_ROOT_PASSWORD}
+      POSTGRES_DB: ${POSTGRESDB_DATABASE}
+    volumes:
+      - db_data:/var/lib/postgresql/data 
+
+volumes:
+  db_data:

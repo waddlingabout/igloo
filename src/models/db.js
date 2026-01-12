@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
-import userModel from "./models/User.js";
-import externalModel from "./models/External.js";
+import userModel from "./User.js";
+import externalModel from "./External.js";
 
 const sequelize = new Sequelize(
     process.env.POSTGRESDB_DATABASE,
@@ -23,7 +23,7 @@ const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.users = userModel(sequelize);
+db.User = userModel(sequelize);
 db.External = externalModel(sequelize);
 
 
@@ -32,7 +32,7 @@ db.User.hasMany(db.External, {
     as: 'externals'     
 });
 
-db.ExternalMap.belongsTo(db.User, {
+db.External.belongsTo(db.User, {
     foreignKey: 'userId'
 });
 
